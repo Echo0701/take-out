@@ -104,4 +104,18 @@ public class EmployeeController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 启用禁用员工账号
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}") //说明路径
+    @ApiOperation("启用禁用员工账号")
+    //对于查询类的，需要加上泛型；对于非查询类的就不需要了
+    public Result startOrstop(@PathVariable Integer status,Long id) {
+        log.info("启用禁用员工账号：{}，{}",status,id);
+        employeeService.startOrstop(status,id);
+        return Result.success();
+    }
 }

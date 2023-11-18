@@ -33,6 +33,14 @@ public interface EmployeeMapper {
      * @param employeePageQueryDTO
      * @return
      */
-    Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
     //这里涉及到动态的sql，所以需要到映射文件（src/main/resources/mapper/EmployeeMapper.xml）里面去编写 sql 语句
+    Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    /**
+     * 根据主键动态修改属性
+     * @param employee
+     */
+    //这里同pageQuery,需要到映射文件里面去编写动态 sql 语句
+    void update(Employee employee);
+
 }

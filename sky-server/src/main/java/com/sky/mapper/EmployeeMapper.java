@@ -43,4 +43,11 @@ public interface EmployeeMapper {
     //这里同pageQuery,需要到映射文件里面去编写动态 sql 语句
     void update(Employee employee);
 
+    /**
+     * 根据 id 来查询员工信息
+     * @param id
+     * @return
+     */
+    @Select("select * from employee where id = #{id}")
+    Employee getById(Long id);
 }

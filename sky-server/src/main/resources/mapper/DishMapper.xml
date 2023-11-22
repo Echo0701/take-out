@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.DishMapper">
+
+<!--useGeneratedKeys="true"，keyProperty="id"：表明我需要这个sql语句的主键返回值,而且这个主键值会付给我们这个的id属性（为了获得这个id 然后返回给后面的口味处理的部分）-->
+    <insert id = "insert" useGeneratedKeys="true" keyProperty="id">
+        insert into dish (name, category_id, price, image, description, create_time, update_time, create_user, update_user, status)
+            values
+        (#{name}, #{category_id}, #{price}, #{image}, #{description}, #{create_time}, #{update_time}, #{create_user}, #{update_user}, #{status})
+    </insert>
+
+</mapper>

@@ -102,7 +102,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param employeePageQueryDTO
      * @return
      */
-    @Override
     public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
         //底层是基于MySQL 的limit 关键句（：select * from employee limit 0,10 ）来实现分页查询
         //这里提供 mybatis 框架的 pagehelper 插件来简化分页代码的编写,它能够实现动态的sql拼接
@@ -124,7 +123,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param status
      * @param id
      */
-    @Override
     public void startOrstop(Integer status, Long id) {
         // update employee set status = ? where id = ?
 
@@ -147,7 +145,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id
      * @return
      */
-    @Override
     public Employee getById(Long id) {
         Employee employee = employeeMapper.getById(id);
         employee.setPassword("****");
@@ -158,7 +155,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 编辑员工信息
      * @param employeeDTO
      */
-    @Override
     public void update(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO,employee); //属性拷贝

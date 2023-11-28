@@ -12,3 +12,9 @@ sky:
     access-key-id: LTAI5tLmKyefze8CGYs47HQt
     access-key-secret: MvO3k0AIAm4GSNujs0fLug4Chyu4sB
     bucket-name: cq-takeout-test
+
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+    database: 1

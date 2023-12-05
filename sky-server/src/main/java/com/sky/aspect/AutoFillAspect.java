@@ -28,7 +28,7 @@ public class AutoFillAspect {
     /**
      * 切入点
      */
-    @Pointcut("execution(* com.sky.mapper.*.*(..) && @annotation(com.sky.annotation.AutoFill)")
+    @Pointcut("execution(* com.sky.mapper.*.*(..)) && @annotation(com.sky.annotation.AutoFill)")
     public void autoFillPointCut() {
 
     }
@@ -39,7 +39,7 @@ public class AutoFillAspect {
      */
     //定义前置通知，因为要在 update 和 insert 之前为公共字段赋值
     //当匹配上切点表达式的时候就会执行我们这个通知的方法
-    @Before("autoFillPointCut")
+    @Before("autoFillPointCut()")
     public void autoFill(JoinPoint joinPoint) {
         log.info("开始进行公共字段的填充...");
 

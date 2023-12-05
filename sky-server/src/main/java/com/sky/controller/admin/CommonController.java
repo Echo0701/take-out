@@ -7,6 +7,7 @@ import com.sky.utils.AliOssUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class CommonController {
     //这里的 file 要和前端接口请求的参数名相同
 
+    @Autowired
     private AliOssUtil aliOssUtil;
     /**
      * 文件上传

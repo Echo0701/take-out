@@ -16,34 +16,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Slf4j
 public class RedisConfiguration {
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         log.info("开始创建redis模板对象...");
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
+        RedisTemplate redisTemplate = new RedisTemplate();
 
         //设置redis的连接工厂对象
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
-
         //设置redis (键)的序列化器
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-
-//        // Json序列化配置
-//        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-//        ObjectMapper om = new ObjectMapper();
-//        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-//        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-//        jackson2JsonRedisSerializer.setObjectMapper(om);
-//        // String 的序列化
-//        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-//        // key采用String的序列化方式
-//        redisTemplate.setKeySerializer(stringRedisSerializer);
-//        // hash的key也采用String的序列化方式
-//        redisTemplate.setHashKeySerializer(stringRedisSerializer);
-//        // value序列化方式采用jackson
-//        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-//        // hash的value序列化方式采用jackson
-//        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-//        redisTemplate.afterPropertiesSet();
 
         return redisTemplate;
     }

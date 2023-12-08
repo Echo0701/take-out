@@ -9,8 +9,10 @@ sky:
 
   alioss:
     endpoint: oss-cn-hangzhou.aliyuncs.com
-    access-key-id: LTAI5tLmKyefze8CGYs47HQt
-    access-key-secret: MvO3k0AIAm4GSNujs0fLug4Chyu4sB
+#    access-key-id: LTAI5tLmKyefze8CGYs47HQt
+#    access-key-secret: MvO3k0AIAm4GSNujs0fLug4Chyu4sB
+    access-key-id: LTAI5tPeFLzsPPT8gG3LPW64
+    access-key-secret: U6k1brOZXv3nXbulGTUzy6Pd7
     bucket-name: cq-takeout-test
 
   redis:

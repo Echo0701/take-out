@@ -21,4 +21,7 @@ public interface UserMapper {
      */
     //需要返回主键值，这里需要通过xml文件 usegeneratekeys 来获取
     void insert(User user);
+
+    @Select("select * from user where id = #{userId}")
+    User getById(Long userId);
 }

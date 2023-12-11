@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
@@ -14,6 +15,7 @@ import com.sky.utils.WeChatPayUtil;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.websocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -38,6 +42,8 @@ public class OrderServiceImpl implements OrderService {
     private UserMapper userMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 用户下单
@@ -140,8 +146,6 @@ public class OrderServiceImpl implements OrderService {
 
         vo.setPackageStr(jsonObject.getString("package"));
 
-        //为替代微信支付成功后的数据库订单状态更新，多定义一个方法进行修改
-
         Integer OrderPaidStatus = Orders.PAID; //支付状态，已支付
 
         Integer OrderStatus = Orders.TO_BE_CONFIRMED; //订单状态，待接单
@@ -152,6 +156,15 @@ public class OrderServiceImpl implements OrderService {
         LocalDateTime check_out_time = LocalDateTime.now();
 
         orderMapper.updateStatus(OrderStatus, OrderPaidStatus, check_out_time, orderid);
+
+        //通过 websocket 向客户端浏览器推送消息， type orderId content
+        Map map = new HashMap();
+        map.put("type", 1);  // 1 表示来单提醒；2 表示客户催单
+        map.put("orderId", orderid);
+        map.put("content", "订单号:"+ orderid);
+        //把 map 转换成 json 字符串
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
 
         return vo;
     }
@@ -176,7 +189,29 @@ public class OrderServiceImpl implements OrderService {
 //                .build();
 //
 //        orderMapper.update(orders);
+        //为替代微信支付成功后的数据库订单状态更新，多定义一个方法进行修改
 
+    }
+
+    /**
+     * 客户催单
+     * @param id
+     */
+    public void reminder(Long id) {
+        //根据 id 查询订单
+        Orders ordersDB = orderMapper.getById(id);
+
+        //校验订单是否村咋子，并且状态为4
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Map map = new HashMap();
+        map.put("type", 2);  // 1 表示来单提醒， 2 客户催单
+        map.put("orderId", id);
+        map.put("content", "订单号:" + ordersDB.getNumber());
+        //通过 websocket 向客户端浏览器推送消息
+        webSocketServer.sendToAllClient(JSON.toJSONString(map));
     }
 
 }

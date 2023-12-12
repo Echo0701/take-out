@@ -1,10 +1,12 @@
 package com.sky.service.impl;
 
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
+import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import io.swagger.models.auth.In;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -186,6 +189,7 @@ public class ReportServiceImpl implements ReportService {
                 .build();
     }
 
+
     /**
      * 根据条件统计订单数量
      * @param beginTime
@@ -200,6 +204,36 @@ public class ReportServiceImpl implements ReportService {
         map.put("status", status);
         Integer count = orderMapper.countByMap(map);
         return count;
+    }
+
+    /**
+     * 销量排名前10菜品统计
+     * @param begin
+     * @param end
+     * @return
+     */
+    public SalesTop10ReportVO getSalesTop10(LocalDate begin, LocalDate end) {
+        //需要查询 order_detail表中的 number 字段：销售的份数， 把这个number的值累加起来
+        //还需要查询 orders 表中，status = 5 的订单，因为订单取消的时候我们只是更新了状态，并没有取消订单详细表的数据，所以还需要结合订单表来进行判断
+        // select od.name,sum(od.number) number from order_detail, orders o where od.order_id = o.id and o.status = 5 and o.order_time > ? and o.order_time < ?
+        // group by od.name
+        // order by number desc
+        // limit 0, 10  //limit [offset，] rows ：从offset+1行开始，检索rows行记录。
+        LocalDateTime beginTime = LocalDateTime.of(begin, LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(end, LocalTime.MAX);
+        List<GoodsSalesDTO> salesTop10 = orderMapper.getSalesTop10(beginTime, endTime);
+        //这里获得的结果 list 里面是 DTO 类型，需要将集合进行遍历，获得 DTO 里面的 name 属性然后用“，”拼接到一起，形成这个函数返回结果 VO 里面的 nameList 集合
+        //  这里仍然用 stream 流来循环
+        List<String> names= salesTop10.stream().map(GoodsSalesDTO::getName).collect(Collectors.toList());
+        String nameList = StringUtils.join(names, ",");
+        List<Integer> numbers = salesTop10.stream().map(GoodsSalesDTO::getNumber).collect(Collectors.toList());
+        String numberList = StringUtils.join(numbers, ",");
+
+        return SalesTop10ReportVO
+                .builder()
+                .nameList(nameList)
+                .numberList(numberList)
+                .build();
     }
 
 }
